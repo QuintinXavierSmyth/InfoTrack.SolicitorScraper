@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="InfoTrack.SolicitorScraper.Api/InfoTrack.SolicitorScraper.Api.csproj" />
+  <Project Path="InfoTrack.SolicitorScraper.Application/InfoTrack.SolicitorScraper.Application.csproj" />
+  <Project Path="InfoTrack.SolicitorScraper.Domain/InfoTrack.SolicitorScraper.Domain.csproj" />
+  <Project Path="InfoTrack.SolicitorScraper.Infrastructure/InfoTrack.SolicitorScraper.Infrastructure.csproj" />
+</Solution>

@@ -1,0 +1,49 @@
+@InfoTrack.SolicitorScraper.Api_HostAddress = https://localhost:7159
+
+
+### Get Locations
+GET {{InfoTrack.SolicitorScraper.Api_HostAddress}}/api/Locations
+
+
+### Add Location
+POST {{InfoTrack.SolicitorScraper.Api_HostAddress}}/api/Locations
+Content-Type: application/json
+
+{
+  "name": "Newcastle",
+  "urlSlug": "newcastle"
+}
+
+
+### Disable Location (replace GUID with location id)
+PUT {{InfoTrack.SolicitorScraper.Api_HostAddress}}/api/Locations/afd27dd2-a514-46fe-8eff-414eb700a5dd/status
+Content-Type: application/json
+
+{
+  "isEnabled": false
+}
+
+
+### Enable Location (replace GUID with location id)
+PUT {{InfoTrack.SolicitorScraper.Api_HostAddress}}/api/Locations/519d3df5-4c5d-441a-99d4-f79f8ec4e142/status
+Content-Type: application/json
+
+{
+  "isEnabled": true
+}
+
+
+### Run Scraper (scraper needs to be run first before any of the below)
+POST {{InfoTrack.SolicitorScraper.Api_HostAddress}}/api/Scraper/run
+
+
+### Get All Solicitors
+GET {{InfoTrack.SolicitorScraper.Api_HostAddress}}/api/Solicitors
+
+
+### Get All Solicitors from London (GUID may need to be changed with id obtained from running Locations)
+GET {{InfoTrack.SolicitorScraper.Api_HostAddress}}/api/Solicitors/location/4497f35a-046e-4b96-850f-11b5005cb616
+
+
+### Get report info
+GET {{InfoTrack.SolicitorScraper.Api_HostAddress}}/api/Reports
