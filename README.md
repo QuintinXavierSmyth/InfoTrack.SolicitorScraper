@@ -1,27 +1,32 @@
 # InfoTrack Solicitor Scraper
 
-A full-stack web application built as part of the InfoTrack development assessment.
+A full-stack web application developed as part of the InfoTrack development assessment.
 
-The application automates the extraction of solicitor contact details from [Solicitors.com](https://www.solicitors.com/) based on selected locations. Users can manage which locations are enabled for scraping, run the scraper, and view the results in a structured report format.
+The application automates the extraction of solicitor contact details from [Solicitors.com](https://www.solicitors.com/) based on selected locations. Users can manage which locations are enabled, run the scraper, and view the scraped solicitor information through a reporting interface.
 
 ---
 
-## Features
+# Features
 
-### Solicitor Data Extraction
-- Scrapes solicitor information from:
-  - https://www.solicitors.com/conveyancing.html
-- Supports the following locations:
-  - London
-  - Birmingham
-  - Leeds
-  - Manchester
-  - Sheffield
-  - Bradford
-  - Liverpool
-  - Bristol
+## Solicitor Data Extraction
 
-Extracted information includes:
+The application scrapes solicitor information from:
+
+https://www.solicitors.com/conveyancing.html
+
+Supported locations:
+
+- London
+- Birmingham
+- Leeds
+- Manchester
+- Sheffield
+- Bradford
+- Liverpool
+- Bristol
+
+The scraper extracts:
+
 - Solicitor name
 - Location
 - Verified status
@@ -36,71 +41,84 @@ Extracted information includes:
 
 ---
 
-### Location Management
+## Location Management
+
 Users can:
-- View available search locations
-- Enable/disable locations
+
+- View available scraping locations
+- Add new locations
+- Enable or disable locations
 - Control which locations are included during scraping
 
-Locations are stored separately from solicitor results to allow future expansion and historical tracking.
+Locations are stored separately from solicitor results, allowing the application to be extended with historical scraping and tracking functionality in the future.
 
 ---
 
-### Reporting Dashboard
-The application provides a clean report layout displaying:
-- Solicitor results grouped by location
-- Ratings and review counts
+## Reporting
+
+The application provides a structured report containing:
+
+- Solicitor details
 - Contact information
-- Website/email links
-- Verification status
+- Ratings
+- Review counts
+- Location-based results
+
+The report data is formatted for easy consumption by the frontend application.
 
 ---
 
-## Architecture
+# Solution Architecture
 
-The solution follows a Clean Architecture approach with separation of responsibilities:
+The solution follows a Clean Architecture approach with separation of responsibilities.
 
 ```
 InfoTrack.SolicitorScraper
 │
 ├── InfoTrack.SolicitorScraper.Api
-│   └── REST API endpoints
+│   └── REST API controllers and application entry point
 │
 ├── InfoTrack.SolicitorScraper.Application
-│   └── Application services and business logic
+│   └── Business logic, services and DTOs
 │
 ├── InfoTrack.SolicitorScraper.Domain
-│   └── Entities and interfaces
+│   └── Domain entities and interfaces
 │
 ├── InfoTrack.SolicitorScraper.Infrastructure
-│   └── Scraping logic and data storage implementations
+│   └── Scraping logic and repository implementations
 │
 └── InfoTrack.SolicitorScraper.Web
-    └── Vue.js SPA frontend
+    └── Vue.js frontend application
 ```
 
 ---
 
-## Technology Stack
+# Technology Stack
 
-### Backend
-- .NET 10 Web API
+## Backend
+
 - C#
+- .NET 10 Web API
 - ASP.NET Core
 - Dependency Injection
 - REST API
 - Clean Architecture principles
 
-### Frontend
+## Frontend
+
 - Vue 3
 - TypeScript
 - Vite
-- Tailwind CSS / DaisyUI
+- Tailwind CSS
+- DaisyUI
 
-### Storage
-The application currently uses an in-memory repository implementation.
+## Storage
 
-This keeps the application lightweight while allowing repositories to be replaced with a database implementation in the future.
+The application uses in-memory repository implementations.
+
+No database configuration is required.
+
+The repository pattern has been used so that a database implementation could be introduced in the future without changing the application logic.
 
 ---
 
@@ -108,7 +126,7 @@ This keeps the application lightweight while allowing repositories to be replace
 
 ## Prerequisites
 
-Ensure you have installed:
+Install:
 
 - .NET 10 SDK
 - Node.js (v18 or later)
@@ -142,11 +160,17 @@ The API will start on:
 https://localhost:7159
 ```
 
+Swagger documentation is available at:
+
+```
+https://localhost:7159/swagger
+```
+
 ---
 
 # Frontend Setup
 
-Navigate to the Vue application:
+Navigate to the frontend project:
 
 ```
 cd InfoTrack.SolicitorScraper.Web
@@ -158,13 +182,13 @@ Install dependencies:
 npm install
 ```
 
-Run the frontend:
+Run the application:
 
 ```
 npm run dev
 ```
 
-The application will be available through the Vite development server.
+The Vue application will start using the Vite development server.
 
 ---
 
@@ -172,53 +196,119 @@ The application will be available through the Vite development server.
 
 ## Locations
 
-### Get available locations
+### Get all locations
 
 ```
 GET /api/Locations
 ```
 
-Returns the configured scraping locations.
+Returns all available scraping locations and their enabled/disabled status.
 
 ---
 
-## Scraper
-
-### Run scraper
+### Add a new location
 
 ```
-POST /api/Scraper/run
+POST /api/Locations
 ```
 
-Runs the scraper against all enabled locations and returns the extracted solicitor information.
+Creates a new scraping location.
+
+Example request:
+
+```json
+{
+  "name": "Liverpool",
+  "urlSlug": "liverpool",
+  "isEnabled": true
+}
+```
 
 ---
 
-# Scraping Approach
+### Update location status
+
+```
+PUT /api/Locations/{id}/status
+```
+
+Updates whether a location is enabled for scraping.
+
+Example request:
+
+```json
+{
+  "isEnabled": false
+}
+```
+
+---
+
+# Solicitors
+
+### Get all solicitors
+
+```
+GET /api/Solicitors
+```
+
+Returns all scraped solicitor records.
+
+---
+
+### Get solicitors by location
+
+```
+GET /api/Solicitors/location/{locationId}
+```
+
+Returns solicitor records filtered by location.
+
+---
+
+# Reports
+
+### Get solicitor report
+
+```
+GET /api/Reports
+```
+
+Returns formatted solicitor report data used by the frontend dashboard.
+
+---
+
+# Scraping Implementation
 
 The scraper was implemented without third-party scraping libraries as requested.
 
-The scraping process is separated into:
+The scraping process is separated into different responsibilities:
 
-### Http Client Layer
-Responsible for:
-- Requesting HTML pages
-- Managing HTTP headers
-- Handling responses
+## HTTP Client
 
-### HTML Parser
 Responsible for:
-- Extracting solicitor result blocks
-- Parsing individual fields
-- Mapping HTML data into domain entities
 
-### Scraper Service
+- Sending requests to Solicitors.com
+- Handling HTTP responses
+- Managing request configuration
+
+## HTML Parser
+
 Responsible for:
-- Coordinating scraping operations
+
+- Extracting solicitor result sections
+- Parsing HTML content
+- Mapping extracted information into application models
+
+## Scraper Service
+
+Responsible for:
+
+- Managing the scraping workflow
 - Processing enabled locations
-- Saving results
+- Saving scraped solicitor results
 
-This keeps scraping logic reusable and easier to maintain.
+This separation keeps the scraping logic reusable and easier to maintain.
 
 ---
 
@@ -226,9 +316,9 @@ This keeps scraping logic reusable and easier to maintain.
 
 ## Dependency Injection
 
-Services and repositories are registered through ASP.NET Core dependency injection.
+ASP.NET Core dependency injection is used throughout the application.
 
-This allows implementations to be swapped without changing business logic.
+This allows services and repositories to be replaced without changing business logic.
 
 Example:
 
@@ -239,73 +329,72 @@ ISolicitorRepository
 InMemorySolicitorRepository
 ```
 
-A database repository could be introduced later without modifying the application layer.
-
 ---
 
 ## Repository Pattern
 
-Repositories abstract data access from the rest of the application.
+Repositories are used to abstract data access.
 
 Benefits:
-- Cleaner separation of concerns
+
+- Separation of concerns
 - Easier testing
-- Database implementation can be added later
+- Ability to replace in-memory storage with a database later
 
 ---
 
-## Domain Driven Structure
+## DTO Usage
 
-Business entities and rules are kept separate from infrastructure concerns.
+DTOs are used between the API and application layers to:
 
-This allows the application to scale with additional features such as:
-- Scheduled scraping
-- Historical reporting
-- Change detection
-- Additional scraping sources
+- Control the data exposed by the API
+- Avoid exposing domain models directly
+- Keep API contracts separate from internal models
 
 ---
 
 # Future Improvements
 
-Given more development time, possible improvements would include:
+Given additional development time, the application could be extended with:
 
-### Database Persistence
-Replace in-memory storage with:
+## Database Persistence
+
+Replace the current in-memory storage with:
+
 - SQL Server Express
 - PostgreSQL
 
-Allowing:
+This would allow:
+
 - Historical scrape results
-- Daily/weekly comparisons
-- New solicitor detection
+- Tracking changes between scrapes
+- Detecting newly added solicitors
 
 ---
 
-### Background Scheduling
+## Scheduled Scraping
 
-Add scheduled scraping using:
-- Hosted services
-- Azure Functions
+Add automated scraping using:
+
+- Background services
+- Scheduled jobs
+
+This would allow solicitor information to be refreshed automatically.
 
 ---
 
-### Additional Insights
+## Additional Scraping Sources
 
-Generate analytics such as:
-
-- Highest rated solicitors
-- Most reviewed solicitors
-- Location comparisons
-- New solicitor alerts
+The scraper could be extended to support additional conveyancing websites by introducing additional scraper implementations.
 
 ---
 
 # Notes
 
-The application was designed to prioritise:
-- Clean architecture
-- Maintainability
-- Separation of concerns
+The application was designed with focus on:
+
+- Clean separation of concerns
+- Maintainable code structure
 - Reusable components
-- Simple deployment
+- Simple setup and deployment
+- Extensibility for future requirements
